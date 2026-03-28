@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> error = new HashMap<>();
         error.put("timestamp", LocalDateTime.now());
         error.put("status",500);
-        error.put("error", "Not Found");
+        error.put("error", "Internal Server Error");
         error.put("message", ex.getMessage());
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

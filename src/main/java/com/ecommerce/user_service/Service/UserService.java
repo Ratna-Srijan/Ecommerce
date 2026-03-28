@@ -1,6 +1,7 @@
 package com.ecommerce.user_service.Service;
 import com.ecommerce.user_service.DTO.UserRequestDto;
 import com.ecommerce.user_service.DTO.UserResponseDto;
+import com.ecommerce.user_service.Exception.DuplicateResourceException;
 import com.ecommerce.user_service.Exception.ResourceNotFoundException;
 import com.ecommerce.user_service.Model.User;
 import com.ecommerce.user_service.Repoistory.UserRepository;
@@ -46,11 +47,11 @@ public class UserService {
     }
 
 
-    // Business Logics -
+    // Mapping Logics -
 
     public UserResponseDto createUser(UserRequestDto dto){
         if(userRepository.existsByEmail(dto.getEmail())){
-            throw new ResourceNotFoundException("Email already registered");
+            throw new DuplicateResourceException("Email already registered");
         }
         User user = mapToEntity(dto);
         user.setActive(true);
