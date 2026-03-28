@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # my additions... hurm
-src/main/resources/application.properties
+.src/main/resources/application.properties
