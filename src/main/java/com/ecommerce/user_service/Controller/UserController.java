@@ -1,5 +1,6 @@
 package com.ecommerce.user_service.Controller;
 
+import com.ecommerce.user_service.DTO.LoginRequestDTO;
 import com.ecommerce.user_service.DTO.UserRequestDto;
 import com.ecommerce.user_service.DTO.UserResponseDto;
 import com.ecommerce.user_service.Service.UserService;
@@ -18,9 +19,14 @@ public class UserController {
         this.userService=userService;
     }
 
-    @PostMapping
+    @PostMapping // Register an user..
     public UserResponseDto createUser(@Valid @RequestBody UserRequestDto dto){
         return userService.createUser(dto);
+    }
+
+    @PostMapping("/login")
+    public UserResponseDto loginUser(@RequestBody LoginRequestDTO dto){
+        return userService.loginUser(dto);
     }
 
     @GetMapping("/{id}")

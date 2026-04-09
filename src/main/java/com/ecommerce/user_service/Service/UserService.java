@@ -1,10 +1,12 @@
 package com.ecommerce.user_service.Service;
+import com.ecommerce.user_service.DTO.LoginRequestDTO;
 import com.ecommerce.user_service.DTO.UserRequestDto;
 import com.ecommerce.user_service.DTO.UserResponseDto;
 import com.ecommerce.user_service.Exception.DuplicateResourceException;
 import com.ecommerce.user_service.Exception.ResourceNotFoundException;
 import com.ecommerce.user_service.Model.User;
 import com.ecommerce.user_service.Repoistory.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));
         user.setPhoneNo(dto.getPhoneNo());
         user.setCreatedAt(java.time.LocalDateTime.now());
         return user;
@@ -49,6 +51,7 @@ public class UserService {
 
     // Mapping Logics -
 
+    // for registering users
     public UserResponseDto createUser(UserRequestDto dto){
         if(userRepository.existsByEmail(dto.getEmail())){
             throw new DuplicateResourceException("Email already registered");
@@ -58,6 +61,17 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
         return mapToResponseDto(savedUser);
+    }
+
+    // for login of users
+    public UserResponseDto loginUser(LoginRequestDTO dto){
+       User user = userRepository.findByEmail(dto.getEmail())
+               .orElseThrow(() -> new ResourceNotFoundException("No such user. Please Register!"));
+       if(!BCrypt.checkpw(dto.getPassword(),user.getPassword())){
+           throw new ResourceNotFoundException("Invalid credentials");
+       }
+
+       return mapToResponseDto(user);
     }
 
     public UserResponseDto getUserById(Long id){
